@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -63,12 +64,14 @@ namespace IdentityCoreDemo
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    //ValidateIssuerSigningKey = true,
                     // 将下面两个参数设置为false，可以不验证Issuer和Audience，但是不建议这样做。
                     ValidateIssuer = false, // 默认为true
                     ValidateAudience = false, // 默认为true                                                  
                     ValidIssuer = "http://localhost",//Token颁发机构                        
                     ValidAudience = "http://localhost",//颁发给谁
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Hello-key-----wyt")),//密钥
+                    
                     //ClockSkew = TimeSpan.Zero,//允许的服务器时间偏移量
                 };
             });

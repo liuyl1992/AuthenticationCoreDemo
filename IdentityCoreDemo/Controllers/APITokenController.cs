@@ -39,8 +39,8 @@ namespace IdentityCoreDemo.Controllers
                     new Claim(ClaimTypes.MobilePhone,user.PhoneNumber),
                     new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
                     new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
                     new Claim(ClaimTypes.DateOfBirth, user.Birthday.ToString()),
+                    new Claim("company", "中国公司"),
             };
 
             //取出密钥
@@ -66,22 +66,23 @@ namespace IdentityCoreDemo.Controllers
         }
 
         /// <summary>
-        /// 移除Token（退出）请求头中Authentication属性中存放之前发放的Token,以bearer 开头
+        /// 移除Token（退出）请求头中Authorization属性中存放之前发放的Token,以bearer 开头
         /// </summary>
         /// <param name="vm"></param>
         /// <returns></returns>
         [HttpPost("removeToken")]
         public async Task<IActionResult> RemoveToken()
         {
-
+            var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
             var user = User.Identity.Name;
-            await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
-            return Ok("退出成功");
-            //var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
-            //if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
-            //{
+            var dateOfBirth = User.Claims.Where(s => s.Type == ClaimTypes.DateOfBirth).FirstOrDefault()?.Value;
+            if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+            {
+                await HttpContext.SignOutAsync(JwtBearerDefaults.AuthenticationScheme);
+                return Ok($"{user}退出成功");
+            }
+            return BadRequest("认证失败");
 
-            //}
         }
     }
 }
