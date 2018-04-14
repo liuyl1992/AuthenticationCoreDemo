@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<p>Use this area to provide additional information.</p>
+@if (User.Identity.IsAuthenticated)
+{
+    <p>@User.Identity.Name</p>
+    <div style="margin-top: 50px;">
+        <form method="post" asp-action="Signout">
+            <input type="submit" value="退出" />
+        </form>
+    </div>
+}
+else
+{
+
+
+}
+
