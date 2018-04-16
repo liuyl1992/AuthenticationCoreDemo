@@ -46,6 +46,7 @@ namespace IdentityCoreDemo
                 })
                 .AddCookie(options =>
                 {
+                    options.Cookie.Domain = "localhost";
                     options.Cookie.Name = "Cookies_authentication_sso";
                     options.Cookie.Path = "/";//限定cookie的作用域
                     options.AccessDeniedPath = "/Account/Page";
@@ -59,7 +60,7 @@ namespace IdentityCoreDemo
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;                
             }).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -70,8 +71,7 @@ namespace IdentityCoreDemo
                     ValidateAudience = false, // 默认为true                                                  
                     ValidIssuer = "http://localhost",//Token颁发机构                        
                     ValidAudience = "http://localhost",//颁发给谁
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Hello-key-----wyt")),//密钥
-                    
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Hello-key-----wyt")),//密钥                    
                     //ClockSkew = TimeSpan.Zero,//允许的服务器时间偏移量
                 };
             });

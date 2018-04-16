@@ -23,11 +23,13 @@ namespace IdentityCoreDemo.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
-            if (User.Identity.Name != null)
+            if (User.Identity.Name != null && Request.Cookies["sso"] != null)//没有退出
             {
-                return Redirect(returnUrl ?? "/Home/About");
+                Response.Cookies.Append("sso", $"{User.Identity.Name}_", new CookieOptions { Domain = "localhost" });//加密生成token，这里用“_”代表加密过
+                //return Redirect(returnUrl ?? "/Home/About");
+                return Redirect($"http://localhost:{returnUrl.Replace("_", "/")}");
             }
-            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ReturnUrl = $"http://localhost:{returnUrl.Replace("_", "/")}";
             return View();
         }
 
@@ -35,9 +37,11 @@ namespace IdentityCoreDemo.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel vm)
         {
-            if (User.Identity.Name != null)
+            var path = Request.Path;
+            if (User.Identity.Name != null && Request.Cookies["sso"] != null)
             {
                 //认证成功，生成Token,直接登录
+                //Response.Cookies.Append("sso", $"{User.Identity.Name}_", new CookieOptions { Domain = "localhost" });//加密生成token，这里用“_”代表加密过
 
                 return Redirect(vm.ReturnUrl ?? "/Home/About");
             }
@@ -64,7 +68,8 @@ namespace IdentityCoreDemo.Controllers
 
             var principal = new ClaimsPrincipal(claim);
             await HttpContext.SignInAsync(principal);
-            HttpContext.Response.Cookies.Append("111", "000", new CookieOptions());
+            Response.Cookies.Append("sso", $"{user.Name}_", new CookieOptions { Domain = "localhost" });//加密生成token，这里用“_”代表加密过
+
             return Redirect(vm.ReturnUrl ?? "/");
         }
 
