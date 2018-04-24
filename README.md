@@ -1,0 +1,4 @@
+# AuthenticationCoreDemo
+AuthenticationCoreDemo
+这是一个同根域名下的cookie的sso实现
+SSo是asp.netcore实现（包含jwt和auth20验证），client1和client2是webform的Forms验证
